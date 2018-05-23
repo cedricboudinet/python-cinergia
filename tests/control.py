@@ -27,6 +27,9 @@ class ModbusClientMock(ModbusClient):
     def setMockRegister(self, addr, value):
         self._mockRegisters[addr] = value
 
+    def getMockRegister(self, addr):
+        return self._mockRegisters[addr]
+
     def connect(self):
         pass
 
@@ -59,3 +62,14 @@ class Control_Tests(TestCase):
     def test_read_IQ10(self):
         self.cinergiaClient._modbusClient.setMockRegister(462, FloatToIQ10(.5))
         self.assertEqual(self.cinergiaClient.read_IQ10(462), 0.5)
+
+    def test_read_uint32(self):
+        self.assertEqual(self.cinergiaClient._modbusClient.getMockRegister(168), 0)
+        self.cinergiaClient.write_uint32(168, 2)
+        self.assertEqual(self.cinergiaClient._modbusClient.getMockRegister(168), 2)
+
+    def test_read_IQ21(self):
+        raise NotImplementedError()
+
+    def test_read_IQ10(self):
+        raise NotImplementedError()

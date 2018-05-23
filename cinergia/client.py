@@ -1,5 +1,5 @@
 from pymodbus.client.sync import ModbusTcpClient as ModbusClient
-from pymodbus.payload import BinaryPayloadDecoder
+from pymodbus.payload import BinaryPayloadDecoder, BinaryPayloadBuilder
 from pymodbus.constants import Endian
 from . import IQ21toFloat, IQ10toFloat
 cinergiaByteOrder = Endian.Big
@@ -62,3 +62,27 @@ class CinergiaClient():
         '''
         val = self.read_uint32(addr)
         return IQ10toFloat(val)
+
+    def write_uint32(self, addr, value):
+        '''
+        Writes 32 bits unsigned integer value into the cinergia registers
+        :param addr: register address
+        :param value: register value
+        '''
+        raise NotImplementedError()
+
+    def write_IQ10(self, addr, value):
+        '''
+        Writes a float into a fixed point real number with 10 fractional bits
+        :param addr: register address
+        :param value: register value
+        '''
+        raise NotImplementedError()
+
+    def write_IQ21(self, addr, value):
+        '''
+        Writes a float into a fixed point real number with 21 fractional bits
+        :param addr: register address
+        :param value: register value
+        '''
+        raise NotImplementedError()
