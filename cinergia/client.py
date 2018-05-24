@@ -1,7 +1,7 @@
 from pymodbus.client.sync import ModbusTcpClient as ModbusClient
 from pymodbus.payload import BinaryPayloadDecoder, BinaryPayloadBuilder
 from pymodbus.constants import Endian
-from . import IQ21toFloat, IQ10toFloat
+from . import IQ21toFloat, IQ10toFloat, FloatToIQ21, FloatToIQ10
 cinergiaByteOrder = Endian.Big
 cinergiaWordOrder = Endian.Little
 
@@ -69,7 +69,12 @@ class CinergiaClient():
         :param addr: register address
         :param value: register value
         '''
-        raise NotImplementedError()
+        builder = BinaryPayloadBuilder(
+            byteorder=cinergiaByteOrder, wordorder=cinergiaWordOrder)
+        builder.add_32bit_uint(value)
+        registers = builder.to_registers()
+        return self._modbusClient.write_registers(addr, registers, unit=255)
+        # TODO: check write result
 
     def write_IQ10(self, addr, value):
         '''
@@ -77,7 +82,7 @@ class CinergiaClient():
         :param addr: register address
         :param value: register value
         '''
-        raise NotImplementedError()
+        return self.write_uint32(addr, FloatToIQ10(value))
 
     def write_IQ21(self, addr, value):
         '''
@@ -85,4 +90,4 @@ class CinergiaClient():
         :param addr: register address
         :param value: register value
         '''
-        raise NotImplementedError()
+        return self.write_uint32(addr, FloatToIQ21(value))
