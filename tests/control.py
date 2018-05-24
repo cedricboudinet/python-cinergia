@@ -2,9 +2,9 @@ from unittest import TestCase
 from cinergia.client import CinergiaClient
 from cinergia.client import cinergiaByteOrder, cinergiaWordOrder
 from pymodbus.client.sync import ModbusTcpClient as ModbusClient
-from pymodbus.payload import BinaryPayloadBuilder
+from pymodbus.payload import BinaryPayloadBuilder, BinaryPayloadDecoder
 from pymodbus.register_read_message import ReadHoldingRegistersResponse
-from cinergia import FloatToIQ21, FloatToIQ10
+from cinergia import FloatToIQ21, FloatToIQ10, IQ10toFloat, IQ21toFloat
 
 
 class ModbusClientMock(ModbusClient):
@@ -24,8 +24,17 @@ class ModbusClientMock(ModbusClient):
         ret.registers = builder.to_registers()
         return ret
 
+    def write_registers(self, addr, registers, unit):
+        decoder = BinaryPayloadDecoder.fromRegisters(registers,
+            byteorder=cinergiaByteOrder, wordorder=cinergiaWordOrder)
+        val = decoder.decode_32bit_uint()
+        self._mockRegisters[addr]=val
+
     def setMockRegister(self, addr, value):
         self._mockRegisters[addr] = value
+
+    def getMockRegister(self, addr):
+        return self._mockRegisters[addr]
 
     def connect(self):
         pass
@@ -59,3 +68,18 @@ class Control_Tests(TestCase):
     def test_read_IQ10(self):
         self.cinergiaClient._modbusClient.setMockRegister(462, FloatToIQ10(.5))
         self.assertEqual(self.cinergiaClient.read_IQ10(462), 0.5)
+
+    def test_write_uint32(self):
+        self.assertEqual(self.cinergiaClient._modbusClient.getMockRegister(168), 0)
+        self.cinergiaClient.write_uint32(168, 2)
+        self.assertEqual(self.cinergiaClient._modbusClient.getMockRegister(168), 2)
+
+    def test_write_IQ21(self):
+        self.assertEqual(self.cinergiaClient._modbusClient.getMockRegister(168), FloatToIQ21(0))
+        self.cinergiaClient.write_IQ21(168, 0.5)
+        self.assertEqual(self.cinergiaClient._modbusClient.getMockRegister(168), FloatToIQ21(.5))
+
+    def test_write_IQ10(self):
+        self.assertEqual(self.cinergiaClient._modbusClient.getMockRegister(168), FloatToIQ10(0))
+        self.cinergiaClient.write_IQ10(168, .5)
+        self.assertEqual(self.cinergiaClient._modbusClient.getMockRegister(168), FloatToIQ10(.5))

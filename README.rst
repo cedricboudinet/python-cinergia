@@ -47,7 +47,7 @@ Coverage
 
 .. code-block:: bash
 
-   coverage run setup.py
+   coverage run setup.py test
    coverage report -m
 
 
