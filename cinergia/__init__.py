@@ -5,7 +5,7 @@ Cinergia: python library for control and monitoring of cinergia electronic load
 Released under the LGPL license
 '''
 
-__version__ = '0.9.0'
+__version__ = '1.0.0'
 __author__ = "Cedric Boudinet"
 
 

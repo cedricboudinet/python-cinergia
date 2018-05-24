@@ -54,5 +54,4 @@ Coverage
 Work in progress
 ----------------
 
-* Implement writing operations
 * Include the modbus tables in the module so that to access registers via keywords
