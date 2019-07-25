@@ -23,5 +23,9 @@ setup(
     license="LGPL-3.0",
     test_suite='tests',
     classifiers=package_classifiers,
-    install_requires=['pymodbus'],
+    install_requires=['pymodbus==2.1.0'],
+    #scripts=['bin/pyCinergiaTestConn.py'],
+    entry_points = {
+        'console_scripts': ['pyCinergiaTestConn=cinergia.pyCinergiaTestConn:main'],
+    }
     )
