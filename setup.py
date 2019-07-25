@@ -25,4 +25,8 @@ setup(
     test_suite='tests',
     classifiers=package_classifiers,
     install_requires=['pymodbus'],
+    #scripts=['bin/pyCinergiaTestConn.py'],
+    entry_points = {
+        'console_scripts': ['pyCinergiaTestConn=cinergia.pyCinergiaTestConn:main'],
+    }
     )
