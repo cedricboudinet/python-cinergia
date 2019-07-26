@@ -25,7 +25,7 @@ class CinergiaClient():
         '''
         Connects to the cinergia modbus server
         '''
-        self._modbusClient.connect()
+        return self._modbusClient.connect()
 
     def disconnect(self):
         '''

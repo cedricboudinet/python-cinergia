@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 import argparse
 import cinergia.client
-parser = argparse.ArgumentParser(description='Connection test')
-parser.add_argument('target_IP_address', metavar='IP', type=str, nargs='+',
-                    help='an integer for the accumulator')
 
-args = parser.parse_args()
+def main():
+    parser = argparse.ArgumentParser(description='Connection test')
+    parser.add_argument('target_IP_address', metavar='IP', type=str)
+    args = parser.parse_args()
+    print("Trying to connect to %s" % args.target_IP_address)
+    cinergiaClient = cinergia.client.CinergiaClient(args.target_IP_address)
+    try:
+        if not cinergiaClient.connect():
+            raise Exception("Modbus error")
+        print("Connection succesful")
+    except Exception as e:
+        print("Cannot connect to target: %s" % str(e))
 
-cinergiaClient = cinergia.client.CinergiaClient(args.target_IP_address)
-try:
-    cinergiaClient.connect()
-except:
-    print("Cannot connect to target")
+if __name__=="__main__":
+    main()
